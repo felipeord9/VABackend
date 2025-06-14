@@ -51,11 +51,15 @@ router.post('/record', upload.single('video'), (req, res) => {
       })
       .on('error', (err) => {
         console.error('Error al convertir:', err);
+        // ⚠️ En caso de error, también intenta limpiar
+        fs.unlink(inputPath, () => {}); // Silencioso
         res.status(500).send('Error al convertir el video');
       })
       .run();
   } catch (err) {
     console.error('Error general:', err);
+    // ⚠️ Limpieza de emergencia si se captura un error
+    fs.unlink(inputPath, () => {});
     res.status(500).send('Error al procesar el video');
   }
 });
