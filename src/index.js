@@ -5,10 +5,18 @@ const bodyParser = require('body-parser')
 const routerApi = require("./v1/routes");
 const { errorHandler, boomErrorHandler, ormErrorHandler } = require('./middlewares/errorHandler')
 const { config } = require("./config/config");
+const cron = require('node-cron');
+const runCleanup = require('./v1/routes/limpieza');
 
 const { port, host } = config;
 
 const app = express();
+
+// Ejecutar todos los días a las 2:00 AM
+cron.schedule('0 12 * * *', () => {
+  console.log('⏰ Ejecutando limpieza automática de carpetas...');
+  runCleanup();
+});
 
 // Se declaran las opciones de cors
 /* let corsOptions = {
