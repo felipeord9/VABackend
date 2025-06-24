@@ -93,7 +93,7 @@ const sendRecovery = async (email) => {
             }
 
             .header {
-              background-color: #eb6146;
+              background-color: #145a83;
               padding: 5px;
               text-align: center;
             }
@@ -200,8 +200,8 @@ const sendRecovery = async (email) => {
                 AGRADECEMOS NOS INFORME AL RESPECTO.</p>
                <p> El contenido de este mensaje de
                 correo electrónico y todos los archivos adjuntos a éste contienen
-                información de carácter confidencial y/o uso privativo de ONCAA
-                BOX y de sus destinatarios. Si usted recibió este mensaje
+                información de carácter confidencial y/o uso privativo de VIDRIOS &
+                ACCESORIOS y de sus destinatarios. Si usted recibió este mensaje
                 por error, por favor elimínelo y comuníquese con el remitente para
                 informarle de este hecho, absteniéndose de divulgar o hacer cualquier
                 copia de la información ahí contenida, gracias. En caso contrario
@@ -227,7 +227,7 @@ const changeRecoveryPassword = async (token, newPassword) => {
 
     if (user.recoveryToken !== token) throw boom.unauthorized()
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    const hashedPassword = await bcrypt.hashSync(newPassword, 10)
 
     await UserService.update(user.id, {
       password: hashedPassword,
