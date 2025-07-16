@@ -13,19 +13,8 @@ const findAll = async () =>{
 }
 
 const find = async () => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Fecha sin la hora
   const Records = await models.Record.findAll({
-    include: [
-      "balance",
-      "user"
-    ],
-    where: {
-      date: {
-        [Op.gte]: today,
-        [Op.lt]: new Date(today.getTime() + 24 * 60 * 60 * 1000) // Añade 24 horas para obtener el fin del día
-      },
-    }
+    order: [["id", "DESC"]],
   })
   return Records
 }
@@ -72,6 +61,7 @@ const create = async (body) => {
 }
 
 const update = async (id, changes) => {
+  console.log(changes)
   const record = await findOne(id)
   const updatedRecord = await record.update(changes)
 

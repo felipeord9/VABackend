@@ -9,18 +9,27 @@ const RecordSchema = {
     primaryKey: true,
     autoIncrement: true
   },
+  status:{
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   placa: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   initialVideo: {
     type: DataTypes.BOOLEAN,
-    allowNull: false,
+    allowNull: true,
     field: "initial_video",
+  },
+  initialCreatedBy:{
+    type: DataTypes.STRING,
+    allowNull: true,
+    field:'initial_created_by',
   },
   initalDate: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
     field: "initial_date",
   },
   finalVideo: {
@@ -28,12 +37,35 @@ const RecordSchema = {
     allowNull: true,
     field: "final_video",
   },
+  finalCreatedBy:{
+    type: DataTypes.STRING,
+    allowNull: true,
+    field:'final_created_by',
+  },
   finalDate: {
     type: DataTypes.DATE,
     allowNull: true,
     field: "final_date",
   },
-  userId: {
+  news:{
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+  },
+  newsCreatedBy:{
+    type: DataTypes.STRING,
+    allowNull: true,
+    field:'news_created_by',
+  },
+  newsDate: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: "news_date",
+  },
+  motivo:{
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  /* userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     field: 'created_by',
@@ -43,7 +75,7 @@ const RecordSchema = {
     },
     onUpdate: "CASCADE",
     onDelete: "SET NULL",
-  },
+  }, */
   observations: {
     type: DataTypes.TEXT,
     allowNull: true
@@ -52,7 +84,7 @@ const RecordSchema = {
 
 class Record extends Model {
   static associate(models) {
-    this.belongsTo(models.User, { as: 'user'})
+    /* this.belongsTo(models.User, { as: 'user'}) */
   }
 
   static config(sequelize) {
