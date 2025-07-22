@@ -80,6 +80,11 @@ const RecordSchema = {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  reasonNews:{
+    type: Sequelize.STRING,
+    allowNull: true,
+    /* field:'reason_news' */
+  }
 };
 
 class Record extends Model {
