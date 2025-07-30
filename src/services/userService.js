@@ -8,6 +8,15 @@ const find = async () => {
   return users
 }
 
+const findInstallers = async () => {
+  const users = await models.User.findAll({
+    where: {
+      role: 'usuario'
+    }
+  })
+  return users
+}
+
 const findOne = async (id) => {
   const user = await models.User.findByPk(id)
 
@@ -67,6 +76,7 @@ const remove = async (id) => {
 
 module.exports = {
   find,
+  findInstallers,
   findOne,
   findByEmail,
   findByUsername,

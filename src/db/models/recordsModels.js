@@ -84,6 +84,10 @@ const RecordSchema = {
     type: Sequelize.STRING,
     allowNull: true,
     /* field:'reason_news' */
+  },
+  zone:{
+    type: Sequelize.STRING,
+    allowNull: true,
   }
 };
 

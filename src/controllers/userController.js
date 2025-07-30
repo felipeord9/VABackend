@@ -14,6 +14,20 @@ const findAllUsers = async (req, res, next) => {
   }
 };
 
+const findAllInstallers = async (req, res, next) => {
+  try {
+    const data = await UserService.findInstallers();
+
+    res.status(200).json({
+      message: "OK",
+      data,
+    });
+  } catch (error) {
+    next(error);
+    console.log(error)
+  }
+};
+
 const findOneUser = async (req, res, next) => {
   try {
     const { params: { id } } = req;
@@ -90,6 +104,7 @@ const deleteUser = async (req, res, next) => {
 
 module.exports = {
   findAllUsers,
+  findAllInstallers,
   findOneUser,
   findUserByEmail,
   createUser,
