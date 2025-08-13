@@ -229,7 +229,7 @@ router.post('/qr/record', upload.single('video'), async (req, res) => {
                         <br/>
                         <p><strong>Número de factura:</strong>${numFactura}</p> 
                         <p><strong>Razón social:</strong>${razonSocial}</p> 
-                        <p><strong>Fecha de llegada:</strong>${arriveDate}</p> 
+                        <p><strong>Fecha de factura:</strong>${arriveDate}</p> 
                         <p><strong>Referencia del producto:</strong>${refProduct}</p> 
                         <p><strong>Descripción del producto:</strong>${descriProduct}</p> 
                         <p><strong>Cantidad:</strong>${cantidad}</p>                
