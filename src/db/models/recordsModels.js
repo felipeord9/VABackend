@@ -88,7 +88,12 @@ const RecordSchema = {
   zone:{
     type: Sequelize.STRING,
     allowNull: true,
-  }
+  },
+  placaCreatedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: "placa_created_at",
+  },
 };
 
 class Record extends Model {
