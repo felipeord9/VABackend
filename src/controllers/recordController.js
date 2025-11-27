@@ -66,6 +66,21 @@ const findOneRecord = async (req, res, next) => {
   }
 };
 
+const verifyPlaca = async (req, res, next) => {
+  try {
+    const { params: { id } } = req;
+    const data = await RecordService.verify(id);
+
+    res.status(200).json({
+      message: 'OK',
+      data
+    })
+  } catch (error) {
+    next(error)
+  }
+};
+
+
 const createRecord = async (req, res, next) => {
   try {
     const { body } = req
@@ -87,7 +102,7 @@ const updateRecord = async (req, res, next) => {
     const { params: { id }, body } = req
     const data = await RecordService.update(id, body)
 
-    res.json(200).json({
+    res.status(200).json({
       message: 'Updated',
       data
     })
@@ -116,6 +131,7 @@ module.exports = {
   findAllRecordsComplete,
   findAllRecordsPending,
   findOneRecord,
+  verifyPlaca,
   createRecord,
   updateRecord,
   deleteRecord

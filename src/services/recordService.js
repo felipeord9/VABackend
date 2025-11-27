@@ -55,6 +55,24 @@ const findOne = async (id) => {
   return record
 }
 
+const verify = async (id) => {
+  const record = await models.Record.findOne({
+    where:{
+      id: id,
+      initialVideo: true,
+    }
+  })
+
+  if(!record) {
+    console.log('placa no encontrada')
+    throw boom.notFound('Record no encontrado')
+  }else{
+    console.log(`${JSON.stringify(record)}`)
+  }
+
+  return record
+}
+
 const create = async (body) => {
   const newRecord = await models.Record.create(body)
   return newRecord
@@ -80,6 +98,7 @@ module.exports = {
   findComplete,
   findPending,
   findOne,
+  verify,
   create,
   update,
   remove

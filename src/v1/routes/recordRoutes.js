@@ -9,6 +9,7 @@ router
   .get("/find/records/complete", RecordController.findAllRecordsComplete)
   .get("/find/records/pending", RecordController.findAllRecordsPending)
   .get("/:id", RecordController.findOneRecord)
+  .get("/placa/:id", RecordController.verifyPlaca)
   .post('/', RecordController.createRecord)
   .patch('/:id', RecordController.updateRecord)
   .delete('/:id', RecordController.deleteRecord);
