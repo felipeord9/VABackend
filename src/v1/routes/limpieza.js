@@ -12,7 +12,7 @@ const isOlderThan30Days = (folderName) => {
   const folderDate = new Date(folderName);
   const now = new Date();
   const diffDays = (now - folderDate) / (1000 * 60 * 60 * 24);
-  return diffDays > 30;
+  return diffDays > 120;
 };
 
 async function deleteFolderAndDatabaseEntries(folderDate) {
@@ -34,7 +34,7 @@ async function deleteFolderAndDatabaseEntries(folderDate) {
     // Opcional: truncar hora si quieres precisión por fecha
     oneMonthAgo.setHours(0, 0, 0, 0);
 
-    const deletedCount = models.Record.destroy({
+    const deletedCount = await models.Record.destroy({
         where: {
             initalDate: {
               [Op.lt]: oneMonthAgo // Menor que hace un mes
