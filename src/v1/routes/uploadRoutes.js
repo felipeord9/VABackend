@@ -289,6 +289,56 @@ router.post('/qr/record', upload.single('video'), async (req, res) => {
   }
 });
 
+// Asegurarnos de que el backend sepa dónde guardar
+router.post('/from/camera', upload.single('video'), (req, res) => {
+  console.log('entro')
+  const tempPath = req.file.path;
+  const placa = req.body.placa;
+  const concept = req.body.concept;
+  const createdAt = req.body.createdAt;
+  const ruta = `C:/videos_guardados/${createdAt}/${placa}`
+  const targetName = `video${concept}_${placa}.webm`; // Nombre único con timestamp
+  const targetPath = path.join(ruta, targetName);
+
+  if (!req.file) {
+    return res.status(400).send('No se recibió ningún archivo');
+  }
+
+  //crear el directorio si no esta o utilizar el que ya esta
+  if (!fs.existsSync(ruta)) {
+    console.log('se crea la carpeta');
+    fs.mkdirSync(ruta, { recursive: true });
+  }
+
+  ffmpeg(tempPath)
+    .toFormat('webm')
+    .videoFilters([
+      {
+        filter: 'scale',
+        options: '1280:720' // Escala a 720p manteniendo proporción si es posible
+      }
+    ])
+    .outputOptions([
+      '-preset ultrafast',     // Prioridad máxima a la velocidad de codificación
+      '-deadline realtime',    // Optimización específica para el encoder VP8/VP9
+      '-cpu-used 4',           // Indica a FFmpeg que use más potencia del procesador
+      '-crf 30'                // Calidad constante (0-63, 30 es un buen balance)
+    ])
+    .on('end', () => {
+      fs.unlinkSync(tempPath); 
+      res.json({ 
+        message: 'Video guardado en la raíz', 
+        path: targetPath 
+      });
+    })
+    .on('error', (err) => {
+      console.error('Error:', err);
+      if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+        res.status(500).send('Error en conversión');
+      })
+    .save(targetPath);
+});
+
 router.post('/', async (req, res) => {
   console.log('entro a la ruta');
   const file = req.body.file;

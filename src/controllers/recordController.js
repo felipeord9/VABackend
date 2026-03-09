@@ -80,6 +80,35 @@ const verifyPlaca = async (req, res, next) => {
   }
 };
 
+const alreadyPlaca = async (req, res, next) => {
+  try {
+    const { params: { placa } } = req;
+    const data = await RecordService.already(placa);
+    console.log(JSON.stringify(data))
+
+    res.status(200).json({
+      message: 'OK',
+      data
+    })
+  } catch (error) {
+    next(error)
+  }
+};
+
+const validateStatusPlaca = async (req, res, next) => {
+  try {
+    const { params: { id } } = req;
+    const data = await RecordService.validate(id);
+
+    res.status(200).json({
+      message: 'OK',
+      data
+    })
+  } catch (error) {
+    next(error)
+  }
+};
+
 
 const createRecord = async (req, res, next) => {
   try {
@@ -132,6 +161,8 @@ module.exports = {
   findAllRecordsPending,
   findOneRecord,
   verifyPlaca,
+  alreadyPlaca,
+  validateStatusPlaca,
   createRecord,
   updateRecord,
   deleteRecord

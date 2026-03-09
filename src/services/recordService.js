@@ -73,6 +73,38 @@ const verify = async (id) => {
   return record
 }
 
+const already = async (placa) => {
+  const records = await models.Record.findAll({
+    where: {
+      placa: placa
+    },
+    order: [["id", "DESC"]],
+  })
+
+  if(!records) {
+    console.log('placa no encontrada')
+    throw boom.notFound('Record no encontrado')
+  }
+
+  return records
+}
+
+const validate = async (id) => {
+  const record = await models.Record.findOne({
+    where:{
+      id: id,
+      status: 'No realizado',
+    }
+  })
+
+  if(!record) {
+    console.log('placa no encontrada')
+    throw boom.notFound('Record no encontrado')
+  }
+
+  return record
+}
+
 const create = async (body) => {
   const newRecord = await models.Record.create(body)
   return newRecord
@@ -99,6 +131,8 @@ module.exports = {
   findPending,
   findOne,
   verify,
+  already,
+  validate,
   create,
   update,
   remove
