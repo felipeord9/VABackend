@@ -312,17 +312,17 @@ router.post('/from/camera', upload.single('video'), (req, res) => {
 
   ffmpeg(tempPath)
     .toFormat('webm')
-    .videoFilters([
+    /* .videoFilters([
       {
         filter: 'scale',
         options: '1280:720' // Escala a 720p manteniendo proporción si es posible
       }
-    ])
+    ]) */
     .outputOptions([
       '-preset ultrafast',     // Prioridad máxima a la velocidad de codificación
       '-deadline realtime',    // Optimización específica para el encoder VP8/VP9
       '-cpu-used 4',           // Indica a FFmpeg que use más potencia del procesador
-      '-crf 30'                // Calidad constante (0-63, 30 es un buen balance)
+      '-crf 35'                // Calidad constante (0-63, 30 es un buen balance)
     ])
     .on('end', () => {
       fs.unlinkSync(tempPath); 
@@ -339,6 +339,26 @@ router.post('/from/camera', upload.single('video'), (req, res) => {
     .save(targetPath);
 });
 
+const MAX_SIZE = 25 * 1024 * 1024; // 25MB
+
+function compressVideo(inputPath, outputPath) {
+  return new Promise((resolve, reject) => {
+    ffmpeg(inputPath)
+      .videoCodec("libvpx-vp9")
+      .videoBitrate("800k")
+      .outputOptions(["-crf 35", "-b:v 0"])
+      .on("end", () => {
+        console.log("Video comprimido");
+        resolve(outputPath);
+      })
+      .on("error", (err) => {
+        console.log("Error comprimiendo video", err);
+        reject(err);
+      })
+      .save(outputPath);
+  });
+}
+
 router.post('/', async (req, res) => {
   console.log('entro a la ruta');
   const file = req.body.file;
@@ -351,13 +371,33 @@ router.post('/', async (req, res) => {
 
   const videoPath = path.join('C:/videos_guardados', fecha, placa, file);
 
-  fs.access(videoPath, fs.constants.F_OK, (err) => {
+  fs.access(videoPath, fs.constants.F_OK, async (err) => {
     if (err) {
       console.log(err)
       return res.status(404).send('Video no encontrado');
     }
 
     try{
+      let fileToSend = videoPath;
+
+      const stats = fs.statSync(videoPath);
+
+      // SI EL VIDEO ES MAYOR A 25MB -> COMPRIMIR
+      if (stats.size > MAX_SIZE) {
+        console.log("Video supera 25MB, comprimiendo...");
+
+        const compressedPath = path.join(
+          "C:/videos_guardados",
+          fecha,
+          placa,
+          `compressed_${file}`
+        );
+
+        await compressVideo(videoPath, compressedPath);
+
+        fileToSend = compressedPath;
+      }
+
       const transporter = nodemailer.createTransport({
         host: config.smtpHost,
         port: config.smtpPort,
@@ -379,7 +419,7 @@ router.post('/', async (req, res) => {
           attachments: [
             {
               filename: `${fileName}_${placa}_${fecha}.mp4`,
-              path: videoPath,
+              path: fileToSend,
             },
           ],
           html: `

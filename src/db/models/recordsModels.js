@@ -94,6 +94,11 @@ const RecordSchema = {
     allowNull: true,
     field: "placa_created_at",
   },
+  typeInstall:{
+    type: Sequelize.STRING,
+    allowNull: true,
+    field:'type_install'
+  }
 };
 
 class Record extends Model {

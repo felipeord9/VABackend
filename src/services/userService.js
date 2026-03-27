@@ -12,7 +12,8 @@ const findInstallers = async () => {
   const users = await models.User.findAll({
     where: {
       role: 'usuario'
-    }
+    },
+    order: [["id", "DESC"]]
   })
   return users
 }

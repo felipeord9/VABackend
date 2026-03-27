@@ -5,7 +5,7 @@ const RecordRoutes = require('./recordRoutes')
 const AuthRoutes = require('./authRoutes')
 const UploadRoutes = require('./uploadRoutes')
 const QrRoutes = require('./qrRoutes')
-
+const TypeInstallRoutes = require('./typeInstallRoutes')
 
 function routerApi(app) {
     const router = express.Router()
@@ -18,6 +18,7 @@ function routerApi(app) {
     router.use('/record', RecordRoutes)
     router.use('/upload', UploadRoutes)
     router.use('/qrs', QrRoutes)
+    router.use('/type', TypeInstallRoutes)
 }
 
 module.exports = routerApi

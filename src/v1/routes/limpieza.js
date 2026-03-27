@@ -12,7 +12,7 @@ const isOlderThan30Days = (folderName) => {
   const folderDate = new Date(folderName);
   const now = new Date();
   const diffDays = (now - folderDate) / (1000 * 60 * 60 * 24);
-  return diffDays > 120;
+  return diffDays > 365;
 };
 
 async function deleteFolderAndDatabaseEntries(folderDate) {
