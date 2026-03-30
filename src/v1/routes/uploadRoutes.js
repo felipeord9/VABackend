@@ -304,6 +304,11 @@ router.post('/from/camera', upload.single('video'), (req, res) => {
     return res.status(400).send('No se recibió ningún archivo');
   }
 
+  const originalSizeBytes = req.file.size;
+  const originalSizeMB = (originalSizeBytes / (1024 * 1024)).toFixed(2);
+
+  console.log(`📥 Tamaño original: ${originalSizeMB} MB`);
+
   //crear el directorio si no esta o utilizar el que ya esta
   if (!fs.existsSync(ruta)) {
     console.log('se crea la carpeta');
@@ -319,12 +324,18 @@ router.post('/from/camera', upload.single('video'), (req, res) => {
       }
     ]) */
     .outputOptions([
-      '-preset ultrafast',     // Prioridad máxima a la velocidad de codificación
-      '-deadline realtime',    // Optimización específica para el encoder VP8/VP9
-      '-cpu-used 4',           // Indica a FFmpeg que use más potencia del procesador
-      '-crf 35'                // Calidad constante (0-63, 30 es un buen balance)
+      '-vf scale=640:-2',     // 🔥 baja a 480p aprox
+      '-r 24',                // 🔥 menos FPS
+      '-c:v libvpx',          // codec webm
+      '-b:v 600k',            // 🔥 bitrate bajo
+      '-crf 35',              // calidad (más alto = más compresión)
+      '-cpu-used 5',
+      '-deadline realtime'
     ])
     .on('end', () => {
+      const compressedSizeBytes = fs.statSync(targetPath).size;
+      const compressedSizeMB = (compressedSizeBytes / (1024 * 1024)).toFixed(2);
+      console.log(`📦 Tamaño comprimido: ${compressedSizeMB} MB`);
       fs.unlinkSync(tempPath); 
       res.json({ 
         message: 'Video guardado en la raíz', 
@@ -334,7 +345,9 @@ router.post('/from/camera', upload.single('video'), (req, res) => {
     .on('error', (err) => {
       console.error('Error:', err);
       if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
-        res.status(500).send('Error en conversión');
+      return res.status(500).json({
+        error: 'Error en conversión'
+      });
       })
     .save(targetPath);
 });
